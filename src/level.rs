@@ -1,12 +1,12 @@
+use crate::constants::{TILE_MAP, TILE_SIZE};
+use graphics::{math::*, polygon, Graphics};
+use std::fs::File;
 use std::io;
 use std::io::prelude::*;
-use std::fs::File;
-use graphics::{Graphics, math::*, types::*, line, polygon};
-use crate::constants::{TILE_MAP, TILE_SIZE};
 
 pub struct Level {
-    size: [usize; 2],
-    map: Vec<u8>
+    pub size: [usize; 2],
+    map: Vec<u8>,
 }
 
 impl Level {
@@ -25,15 +25,15 @@ impl Level {
 
         //read size
         let size: [usize; 2];
-        let sz = lvlsz[1..len-1].split_once('.');
+        let sz = lvlsz[1..len - 1].split_once('.');
         match sz {
             Some((x, y)) => {
                 size = [
                     x.parse::<u32>().unwrap() as usize,
                     y.parse::<u32>().unwrap() as usize,
                 ]
-            },
-            None => panic!("Wrong lvl format")
+            }
+            None => panic!("Wrong lvl format"),
         }
 
         //read map
@@ -41,14 +41,11 @@ impl Level {
         let mut skip: [u8; 1] = [0];
         let mut c = 0;
         for r in 1..size[0] {
-            reader.read_exact(&mut map[c..c+size[1]]).unwrap();
+            reader.read_exact(&mut map[c..c + size[1]]).unwrap();
             reader.read_exact(&mut skip).unwrap();
             c = r * size[1];
         }
-        Level {
-            size,
-            map
-        }
+        Level { size, map }
     }
 
     pub fn draw<G: Graphics>(&self, t: Matrix2d, g: &mut G) {
@@ -56,7 +53,7 @@ impl Level {
         let mut c = 0;
         for cell in self.map.iter() {
             if *cell == 0 {
-                continue
+                continue;
             }
             let color = TILE_MAP[cell];
             polygon(
@@ -67,8 +64,12 @@ impl Level {
                     [TILE_SIZE.0, TILE_SIZE.1],
                     [0.0, TILE_SIZE.1],
                 ],
-                multiply(t, translate([r as f64 *TILE_SIZE.0, c as f64 * TILE_SIZE.1])),
-                g);
+                multiply(
+                    t,
+                    translate([c as f64 * TILE_SIZE.0, r as f64 * TILE_SIZE.1]),
+                ),
+                g,
+            );
             c += 1;
             if c >= self.size[0] {
                 r += 1;
