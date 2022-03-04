@@ -1,6 +1,6 @@
 use graphics::clear;
 use opengl_graphics::GlGraphics;
-use piston::input::{Button, ButtonArgs, Key, RenderArgs, UpdateArgs};
+use piston::input::{Button, ButtonArgs, ButtonState, RenderArgs, UpdateArgs};
 
 use crate::{constants, level, player};
 
@@ -47,36 +47,41 @@ impl Tdg {
         }
     }
 
-    pub fn update_inputs(&mut self, args: &Key) {
+    pub fn update_inputs(&mut self, args: &ButtonArgs) {
         self.next_pos = self.p.pos;
-        if self.controls.contains_key(args) {
-            match self.controls[args] {
-                player::PlayerAction::MOVE_UP => {
-                    println!("MOVE_UP");
-                    self.next_pos = add_pos(self.p.pos, constants::DIRECTION::UP, self.lvl.size)
+        if let (Button::Keyboard(k), ButtonState::Press) = (args.button, args.state) {
+            if self.controls.contains_key(&k) {
+                match self.controls[&k] {
+                    player::PlayerAction::MOVE_UP => {
+                        println!("MOVE_UP");
+                        self.next_pos = add_pos(self.p.pos, constants::Direction::UP, self.lvl.size)
+                    }
+                    player::PlayerAction::MOVE_DOWN => {
+                        println!("MOVE_DOWN");
+                        self.next_pos =
+                            add_pos(self.p.pos, constants::Direction::DOWN, self.lvl.size)
+                    }
+                    player::PlayerAction::MOVE_LEFT => {
+                        println!("MOVE_LEFT");
+                        self.next_pos =
+                            add_pos(self.p.pos, constants::Direction::LEFT, self.lvl.size)
+                    }
+                    player::PlayerAction::MOVE_RIGHT => {
+                        println!("MOVE_RIGHT");
+                        self.next_pos =
+                            add_pos(self.p.pos, constants::Direction::RIGHT, self.lvl.size)
+                    }
+                    player::PlayerAction::INTERACT => {}
+                    _ => {}
                 }
-                player::PlayerAction::MOVE_DOWN => {
-                    println!("MOVE_DOWN");
-                    self.next_pos = add_pos(self.p.pos, constants::DIRECTION::DOWN, self.lvl.size)
-                }
-                player::PlayerAction::MOVE_LEFT => {
-                    println!("MOVE_LEFT");
-                    self.next_pos = add_pos(self.p.pos, constants::DIRECTION::LEFT, self.lvl.size)
-                }
-                player::PlayerAction::MOVE_RIGHT => {
-                    println!("MOVE_RIGHT");
-                    self.next_pos = add_pos(self.p.pos, constants::DIRECTION::RIGHT, self.lvl.size)
-                }
-                player::PlayerAction::INTERACT => {}
-                _ => {}
             }
+            println!("{:?}", self.next_pos);
         }
-
-        println!("{:?}", self.next_pos);
     }
 
-    pub fn update(&mut self, args: &UpdateArgs) {
-        self.p.update(self.next_pos, self.next_state, args.dt);
+    pub fn update(&mut self, _args: &UpdateArgs) {
+        // args.dt
+        self.p.update(self.next_pos, self.next_state);
     }
 
     pub fn render(&mut self, args: &RenderArgs) {

@@ -9,7 +9,7 @@ extern crate piston;
 use glutin_window::GlutinWindow as Window;
 use opengl_graphics::{GlGraphics, OpenGL};
 use piston::event_loop::{EventSettings, Events};
-use piston::input::{Button, ButtonEvent, RenderEvent, UpdateEvent};
+use piston::input::{ButtonEvent, RenderEvent, UpdateEvent};
 use piston::window::WindowSettings;
 
 mod constants;
@@ -34,9 +34,7 @@ fn main() {
     let mut events = Events::new(es);
     while let Some(e) = events.next(&mut window) {
         if let Some(args) = e.button_args() {
-            if let Button::Keyboard(k) = args.button {
-                tdg.update_inputs(&k);
-            }
+            tdg.update_inputs(&args);
         }
         if let Some(args) = e.render_args() {
             tdg.render(&args);

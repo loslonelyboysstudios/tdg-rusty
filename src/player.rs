@@ -5,7 +5,6 @@ use graphics::{DrawState, Image};
 use opengl_graphics::{Filter, ImageSize, Texture, TextureSettings};
 
 use crate::constants::TILE_SIZE;
-use piston::input::{Button, ButtonArgs, ButtonState};
 use std::f64::consts::PI;
 
 bitflags! {
@@ -49,7 +48,7 @@ impl Player {
         }
     }
 
-    pub fn update(&mut self, pos: [u32; 2], state: PlayerState, dt: f64) {
+    pub fn update(&mut self, pos: [u32; 2], state: PlayerState) {
         self.pos = pos;
         self.state = state;
     }
@@ -77,10 +76,7 @@ impl Player {
                 t,
                 multiply(
                     self.facing(scale(sx, sy)),
-                    translate([
-                        0.5 * TILE_SIZE.0 * self.pos[0] as f64,
-                        0.5 * TILE_SIZE.1 * self.pos[1] as f64,
-                    ]),
+                    translate([(sz.0 * self.pos[0]) as f64, (sz.1 * self.pos[1]) as f64]),
                 ),
             ),
             g,
