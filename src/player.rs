@@ -27,6 +27,10 @@ bitflags! {
     }
 }
 
+pub trait Entity {
+    fn get_position(self) -> [u32; 2];
+}
+
 pub struct Player {
     pub pos: [u32; 2],
     pub state: PlayerState,
@@ -53,7 +57,7 @@ impl Player {
         self.state = state;
     }
 
-    fn facing(&self, t: Matrix2d) -> Matrix2d {
+    fn facing(&self) -> Matrix2d {
         let mut angle = 0.0;
         match self.state.difference(PlayerState::INTERACT) {
             PlayerState::FACE_UP => angle = PI,
@@ -62,24 +66,39 @@ impl Player {
             PlayerState::FACE_RIGHT => angle = PI * 1.5,
             _ => {}
         };
-        multiply(t, rotate_radians(angle))
+        let sx = self.sprite.get_size().0 as f64;
+        let sy = self.sprite.get_size().0 as f64;
+        multiply(
+            translate([sx / 2.0, sy / 2.0]),
+            multiply(rotate_radians(angle), translate([sx / -2.0, sy / -2.0])),
+        )
     }
 
     pub fn draw<G: Graphics<Texture = Texture>>(&self, t: Matrix2d, g: &mut G) {
         let sz = self.sprite.get_size();
-        let sx = TILE_SIZE.0 / sz.0 as f64;
-        let sy = TILE_SIZE.1 / sz.1 as f64;
         self.img.draw(
             &self.sprite,
             &DrawState::default(),
             multiply(
                 t,
                 multiply(
-                    self.facing(scale(sx, sy)),
-                    translate([(sz.0 * self.pos[0]) as f64, (sz.1 * self.pos[1]) as f64]),
+                    translate([
+                        TILE_SIZE.0 * self.pos[0] as f64,
+                        TILE_SIZE.1 * self.pos[1] as f64,
+                    ]),
+                    multiply(
+                        scale(TILE_SIZE.0 / sz.0 as f64, TILE_SIZE.1 / sz.1 as f64),
+                        self.facing(),
+                    ),
                 ),
             ),
             g,
         );
+    }
+}
+
+impl Entity for Player {
+    fn get_position(self) -> [u32; 2] {
+        self.pos
     }
 }

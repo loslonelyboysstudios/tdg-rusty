@@ -1,7 +1,7 @@
 // mod player;
 
 use phf::phf_map;
-// use phf::phf_set;
+use phf::phf_set;
 
 use std::collections::HashMap;
 
@@ -43,7 +43,7 @@ pub static TILE_MAP: TileColor = phf_map! {
     b'T' => [0.0117647, 0.7882352, 0.0117647, 1.0],
     b'r' => [0.7882352, 0.7803921, 0.7529411, 1.0],
 };
-// pub static COLLIDEABLE: phf::Set<char> = phf_set! {'T', 'r'};
+pub static COLLIDEABLE: phf::Set<char> = phf_set! {'T', 'r'};
 
 // pub type Interactions = phf::Map<u8, &'static str>;
 // pub static INTERACT_MAP: Interactions = phf_map! {

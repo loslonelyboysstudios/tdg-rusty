@@ -40,7 +40,8 @@ impl Level {
         let mut map: Vec<u8> = vec![0; size[0] * size[1]];
         let mut skip: [u8; 1] = [0];
         let mut c = 0;
-        for r in 1..size[0] {
+        for r in 1..size[0] + 1 {
+            println!("{:}, {:?}", r, map);
             reader.read_exact(&mut map[c..c + size[1]]).unwrap();
             reader.read_exact(&mut skip).unwrap();
             c = r * size[1];

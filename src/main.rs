@@ -28,6 +28,7 @@ fn main() {
         .unwrap_or_else(|e| panic!("Failed to build PistonWindow: {}", e));
 
     let mut tdg = world::Tdg::new(GlGraphics::new(opengl));
+
     //game loop
     let mut es = EventSettings::new();
     es.ups = constants::FRAMES_PER_SECOND;
