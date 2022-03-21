@@ -58,48 +58,49 @@ impl Tdg {
         }
     }
 
+    fn apply_move(
+        &mut self,
+        facing: PlayerState,
+        dir: constants::Direction,
+    ) -> (PlayerState, [u32; 2]) {
+        if !self.p.state.contains(facing) {
+            (facing, self.p.pos)
+        } else {
+            (self.p.state, add_pos(self.p.pos, dir, self.lvl.size))
+        }
+    }
+
     pub fn update_inputs(&mut self, args: &ButtonArgs) {
         if let (Button::Keyboard(k), ButtonState::Press) = (args.button, args.state) {
             if self.controls.contains_key(&k) {
                 match self.controls[&k] {
-                    PlayerAction::MOVE_UP => {
-                        println!("MOVE_UP");
-                        if !self.p.state.contains(PlayerState::FACE_UP) {
-                            self.next_state = PlayerState::FACE_UP;
-                        } else {
-                            self.next_pos =
-                                add_pos(self.p.pos, constants::Direction::UP, self.lvl.size);
+                    PlayerAction::Move(m) => match m {
+                        constants::Directions::UP => {
+                            println!("MOVE_UP");
+                            (self.next_state, self.next_pos) =
+                                self.apply_move(PlayerState::FACE_UP, constants::Directions::UP);
                         }
-                    }
-                    PlayerAction::MOVE_DOWN => {
-                        println!("MOVE_DOWN");
-                        if !self.p.state.contains(PlayerState::FACE_DOWN) {
-                            self.next_state = PlayerState::FACE_DOWN;
-                        } else {
-                            self.next_pos =
-                                add_pos(self.p.pos, constants::Direction::DOWN, self.lvl.size);
+                        constants::Directions::DOWN => {
+                            println!("MOVE_DOWN");
+                            (self.next_state, self.next_pos) = self
+                                .apply_move(PlayerState::FACE_DOWN, constants::Directions::DOWN);
                         }
-                    }
-                    PlayerAction::MOVE_LEFT => {
-                        println!("MOVE_LEFT");
-                        if !self.p.state.contains(PlayerState::FACE_LEFT) {
-                            self.next_state = PlayerState::FACE_LEFT;
-                        } else {
-                            self.next_pos =
-                                add_pos(self.p.pos, constants::Direction::LEFT, self.lvl.size);
+                        constants::Directions::LEFT => {
+                            println!("MOVE_LEFT");
+                            (self.next_state, self.next_pos) = self
+                                .apply_move(PlayerState::FACE_LEFT, constants::Directions::LEFT);
                         }
-                    }
-                    PlayerAction::MOVE_RIGHT => {
-                        println!("MOVE_RIGHT");
-                        if !self.p.state.contains(PlayerState::FACE_RIGHT) {
-                            self.next_state = PlayerState::FACE_RIGHT;
-                        } else {
-                            self.next_pos =
-                                add_pos(self.p.pos, constants::Direction::RIGHT, self.lvl.size);
+                        constants::Directions::RIGHT => {
+                            println!("MOVE_RIGHT");
+                            (self.next_state, self.next_pos) = self
+                                .apply_move(PlayerState::FACE_RIGHT, constants::Directions::RIGHT);
                         }
-                    }
-                    // PlayerAction::INTERACT => {}
-                    _ => self.next_pos = self.p.pos,
+                        _ => {
+                            println!("Direction value: {:?}", m);
+                            panic!("Unreachable");
+                        }
+                    },
+                    PlayerAction::Interact => {} // _ => self.next_pos = self.p.pos,
                 }
             }
             println!("{:?}", self.next_pos);

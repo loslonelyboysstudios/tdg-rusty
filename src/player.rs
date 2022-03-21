@@ -4,19 +4,15 @@ use graphics::{math::*, Graphics};
 use graphics::{DrawState, Image};
 use opengl_graphics::{Filter, ImageSize, Texture, TextureSettings};
 
-use crate::constants::TILE_SIZE;
+use crate::constants::{Direction, TILE_SIZE};
 use std::f64::consts::PI;
 
-bitflags! {
-    #[derive(Default)]
-    pub struct PlayerAction: u32 {
-        const MOVE_UP    = 0b1000_0000;
-        const MOVE_DOWN  = 0b0100_0000;
-        const MOVE_LEFT  = 0b0010_0000;
-        const MOVE_RIGHT = 0b0001_0000;
-        const INTERACT   = 0b0000_1000;
-    }
+pub enum PlayerAction {
+    Move(Direction),
+    Interact,
+}
 
+bitflags! {
     #[derive(Default)]
     pub struct PlayerState: u32 {
         const FACE_UP    = 0b1000_0000;

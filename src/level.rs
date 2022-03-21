@@ -24,17 +24,14 @@ impl Level {
         }
 
         //read size
-        let size: [usize; 2];
         let sz = lvlsz[1..len - 1].split_once('.');
-        match sz {
-            Some((x, y)) => {
-                size = [
-                    x.parse::<u32>().unwrap() as usize,
-                    y.parse::<u32>().unwrap() as usize,
-                ]
-            }
+        let size = match sz {
+            Some((x, y)) => [
+                x.parse::<u32>().unwrap() as usize,
+                y.parse::<u32>().unwrap() as usize,
+            ],
             None => panic!("Wrong lvl format"),
-        }
+        };
 
         //read map
         let mut map: Vec<u8> = vec![0; size[0] * size[1]];

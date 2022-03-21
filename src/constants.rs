@@ -18,22 +18,24 @@ pub const FRAMES_PER_SECOND: u64 = 30;
 pub type Controls = HashMap<Key, PlayerAction>;
 pub fn controls() -> Controls {
     HashMap::from([
-        (Key::W, PlayerAction::MOVE_UP),
-        (Key::S, PlayerAction::MOVE_DOWN),
-        (Key::A, PlayerAction::MOVE_LEFT),
-        (Key::D, PlayerAction::MOVE_RIGHT),
-        (Key::I, PlayerAction::INTERACT),
+        (Key::W, PlayerAction::Move(Directions::UP)),
+        (Key::S, PlayerAction::Move(Directions::DOWN)),
+        (Key::A, PlayerAction::Move(Directions::LEFT)),
+        (Key::D, PlayerAction::Move(Directions::RIGHT)),
+        (Key::I, PlayerAction::Interact),
     ])
 }
 
+pub type Direction = [i32; 2];
+
 #[non_exhaustive]
-pub struct Direction;
-impl Direction {
-    pub const UP: [i32; 2] = [0, -1];
-    pub const RIGHT: [i32; 2] = [1, 0];
-    pub const DOWN: [i32; 2] = [0, 1];
-    pub const LEFT: [i32; 2] = [-1, 0];
-    // pub const NULL: [i32; 2] = [0, 0];
+pub struct Directions;
+impl Directions {
+    pub const UP: Direction = [0, -1];
+    pub const RIGHT: Direction = [1, 0];
+    pub const DOWN: Direction = [0, 1];
+    pub const LEFT: Direction = [-1, 0];
+    // pub const NULL: Direction = [0, 0];
 }
 
 pub type TileColor = phf::Map<u8, Color>;
